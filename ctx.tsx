@@ -1,6 +1,7 @@
 import { useContext, createContext, type PropsWithChildren, useState, useEffect } from 'react';
 import { useStorageState } from './useStorageState';
-import { api_endpoint } from './utils';
+import { API_ENDPOINT } from './utils';
+import { router } from 'expo-router';
 
 // Define the user type
 interface User {
@@ -53,7 +54,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
       const fetchUserData = async () => {
         if (session) {
             try {
-                const response = await fetch(`${api_endpoint}/api/v1/user/auth/status`, {
+                const response = await fetch(`${API_ENDPOINT}/api/v1/user/auth/status`, {
                     method: 'GET',
                     headers: {
                         Authorization: `${session}`,
@@ -85,44 +86,64 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
 
 
+  const signIn = async (email: string, password: string) => {
 
-  const signIn = async (email:string,password:string) =>{
-   
- 
-   
+    try{
+    const response = await fetch(`${API_ENDPOINT}/api/v1/user/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
 
+    if (!response.ok) {
+      const err = await response.json();
+      console.error('Login failed:', err.error);
+      throw new Error(`Network response was not ok: ${response.status}`);
+    }
 
-  
-      const response = await fetch(`${api_endpoint}/api/v1/user/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
-      console.log(response);
+    const data = await response.json();
+    console.log('Login successful:', data.token);
+    alert("Login Successful")
+    setSession(data.token);
 
-      if (!response.ok) {
-        console.log(response);
-        throw new Error(`Network response was not ok: ${response.status}`);
-      
-      }
-  
-      const data = await response.json();
-      console.log('Login successful:', data.token);
-  
-      setSession(data.token);
-  
-      // Fetch authentication status (you might need to implement this function in your app)
-      fetchUserData();
-  
-      return data;
-    
+    router.replace('/');
+
+    // Fetch authentication status (you might need to implement this function in your app)
+    fetchUserData();
+
+    return data;
   }
+  catch(err)
+  {
+    console.log(err);
+  }
+  };
 
+  const signOut = async () => {
+    console.log('Signing out...');
+    const response = await fetch(`${API_ENDPOINT}/api/v1/user/auth/logout`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    console.log(response);
+    if (!response.ok) {
+      const err = await response.json();
+      console.error('Logout failed:', err.error);
+      throw new Error(err.error);
+    }
+
+    setSession(null);
+
+    // Fetch authentication status (you might need to implement this function in your app)
+    fetchUserData();
+  };
 
 
 
@@ -133,9 +154,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
         value={{
 
           signIn,
-          signOut: () => {
-            setSession(null);
-          },
+          signOut,
           session,
           isLoading,
           user,
