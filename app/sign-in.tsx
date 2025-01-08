@@ -1,5 +1,5 @@
 
-import { View,StyleSheet, Text, Pressable, Image,TextInput } from "react-native";
+import { View,StyleSheet, Text, Pressable, Image,TextInput, ActivityIndicator } from "react-native";
 import { useSession } from '../ctx';
 import { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -8,7 +8,7 @@ import FunctionTiedButton from "~/components/FunctionTiedButton";
 
 
 export default function SignIn() {
-  const { signIn,signOut } = useSession();
+  const { signIn,signOut,isLoading } = useSession();
 
   const [email,setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -22,33 +22,32 @@ export default function SignIn() {
 
 
 
-const loginCall = ()=>
-{
-  try{
+const loginCall = async () => {
+  try {
+    // Regular expression to validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  // use email and password to make api call 
-    if (email.trim() === "" || password.trim() === "")
-    {
-       alert("You have missed out on either your email and password!")
+    if (email.trim() === "" || password.trim() === "") {
+      alert("You have missed out on either your email or password!");
+    } else if (!emailRegex.test(email.trim())) {
+      alert("Please enter a valid email address!");
+    } else {
+      // Call sign-in function with email and password
+      await signIn(email, password);
+    
+      
     }
-
-    else{
-       signIn(email,password);
-
-    }
-
-   // make API call to the server
-  // when server responds, set the context to the user object
+  } catch (err) {
+    
+    alert("Account doesn't exist or wrong credentials.");
   }
-  catch(err)
+};
+
+
+  if (isLoading)
   {
-    console.log(err);
-    alert("account don't exist / wrong credentials")
+    return     <ActivityIndicator size="large" />
   }
-
-}
-
-
 
 
 

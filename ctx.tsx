@@ -88,7 +88,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
   const signIn = async (email: string, password: string) => {
 
-    try{
+  
     const response = await fetch(`${API_ENDPOINT}/api/v1/user/auth/login`, {
       method: 'POST',
       headers: {
@@ -102,7 +102,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
     if (!response.ok) {
       const err = await response.json();
-      console.error('Login failed:', err.error);
+   
       throw new Error(`Network response was not ok: ${response.status}`);
     }
 
@@ -117,11 +117,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
     fetchUserData();
 
     return data;
-  }
-  catch(err)
-  {
-    console.log(err);
-  }
+  
+
   };
 
   const signOut = async () => {
