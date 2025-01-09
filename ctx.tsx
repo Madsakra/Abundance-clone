@@ -14,6 +14,7 @@ interface User {
   is_verify:boolean;
   created_at:string;
   updated_at:string;
+  hasProfile?: boolean; // Add hasProfile property
 }
 
 const AuthContext = createContext<{
@@ -22,13 +23,14 @@ const AuthContext = createContext<{
     signOut: () => void;
     session?: string | null;
     isLoading: boolean;
+    setIsLoading: (value: boolean) => void; // Add setIsLoading
 }>({
     user:null,
     signIn: async () => '',
     signOut: () => null,
     session: null,
     isLoading: false,
-    
+    setIsLoading: (value: boolean) => null // Add setIsLoading
   });
 
 
@@ -48,7 +50,7 @@ export function useSession() {
 export function SessionProvider({ children }: PropsWithChildren) {
     const [[isLoading, session], setSession] = useStorageState('session');
     const [user,setUser] = useState<User|null>(null);
-
+    const [loading, setLoading] = useState(false); // Local state for isLoading
 
       // If a session token exists, fetch user data
       const fetchUserData = async () => {
@@ -78,17 +80,28 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
 
     useEffect(() => {
-
-
-      fetchUserData();
-  }, [session]); // Run when session changes
-
+      const fetchAndHandleUserData = async () => {
+        await fetchUserData();
+    
+        // After fetching user data, redirect if needed
+        if (user) {
+          // API CALL TO THE SERVER FOR PROFILE CHECKING
+          if (!user.hasProfile) {
+            router.replace('/(profileCreation)/simpleInformation');
+          } else {
+            router.replace('/');
+          }
+        }
+      };
+    
+      fetchAndHandleUserData();
+    }, [session]); // Run when session changes
 
 
 
   const signIn = async (email: string, password: string) => {
 
-  
+    setLoading(true);
     const response = await fetch(`${API_ENDPOINT}/api/v1/user/auth/login`, {
       method: 'POST',
       headers: {
@@ -108,7 +121,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
     const data = await response.json();
     console.log('Login successful:', data.token);
-    alert("Login Successful")
+    alert("Login Successful");
+    setLoading(false);
     setSession(data.token);
 
     router.replace('/');
@@ -149,11 +163,12 @@ export function SessionProvider({ children }: PropsWithChildren) {
     return (
       <AuthContext.Provider
         value={{
-
+          
           signIn,
           signOut,
           session,
-          isLoading,
+          isLoading: loading,
+          setIsLoading: setLoading, // Expose setIsLoading
           user,
         }}>
         {children}

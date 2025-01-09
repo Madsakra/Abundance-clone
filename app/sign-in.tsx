@@ -46,10 +46,15 @@ const loginCall = async () => {
 
   if (isLoading)
   {
-    return     <ActivityIndicator size="large" />
+    return ( 
+    <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
+    <ActivityIndicator size="large" />
+    </View>
+    )
   }
 
 
+  else{
 
   return (
 
@@ -131,7 +136,7 @@ const loginCall = async () => {
 
 
   );
-}
+  }}
 
 const styles = StyleSheet.create({
 
