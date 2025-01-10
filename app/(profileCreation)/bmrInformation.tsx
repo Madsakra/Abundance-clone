@@ -1,23 +1,42 @@
-import { router } from "expo-router";
-import { useState } from "react";
+import { Entypo } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Link, router } from "expo-router";
+import { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import FunctionTiedButton from "~/components/FunctionTiedButton";
 import InputContainer from "~/components/InputContainer";
+import { updateLocalProfileFields } from "~/utils";
 
 
 export default function bmrInformation() {
   
   const [height, setHeight] = useState<string | null>(null);
-    const [weight,setWeight] = useState<string | null>(null);
+  const [weight,setWeight] = useState<string | null>(null);
 
+// load pre-existing data , so user don't have to restart 
+const loadProfileData = async () => {
+  const data = await AsyncStorage.getItem('profileData');
+  if (data) {
+      const profile = JSON.parse(data);
+   
+      setHeight(profile.height);
+      setWeight(profile.weight);
+  }
+};
 
-    const nextSection = () => {
+    const nextSection = async () => {
       try {
         // Check if height and weight are valid (not null and not 0)
         if (height && weight && Number(height) > 0 && Number(weight) > 0) {
           // Proceed to the next section
           // MAKE CALL TO SQL LITE TO SAVE DATA
+            await updateLocalProfileFields({
+                  height,
+                  weight
+                })
+
+
           router.replace("/(profileCreation)/healthInformation");
         } else {
           // Alert user if height or weight is invalid
@@ -29,11 +48,21 @@ export default function bmrInformation() {
       }
     };
      
+  useEffect(()=>{
+    loadProfileData();
+  },[])
+
+     
 
 
 
     return (
     <View style={{flex:1}}>
+
+        <Link href="/(profileCreation)/simpleInformation" style={{padding:25, paddingBottom:0}}>
+            <Entypo name="chevron-thin-left" size={24} color="black" />
+        </Link>
+
         <View style={styles.headerContainer}>
         <Text style={{fontFamily:"Poppins-Bold",fontSize:32,textAlign:"center"}}>BMR Information</Text>
         <Text style={{fontFamily:"Poppins-Medium",fontSize:16,textAlign:"center",color:"#818181"}}>This is for insulin prediction purposes</Text>

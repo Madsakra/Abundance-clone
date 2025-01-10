@@ -1,11 +1,12 @@
 import { Entypo } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FlashList } from '@shopify/flash-list';
 import { Link, router } from 'expo-router';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import FunctionTiedButton from '~/components/FunctionTiedButton';
 import PressableTab from '~/components/PressableTab';
-import { toggleItemInList } from '~/utils';
+import { toggleItemInList, updateLocalProfileFields } from '~/utils';
 
 export default function dietInfo() {
 
@@ -19,12 +20,30 @@ export default function dietInfo() {
     toggleItemInList(diet,setProfileDiet)
     };
 
-  const nextSection = ()=>{
-    // SEND DATA TO SQL LITE FIRST
+  // load pre-existing data , so user don't have to restart 
+  const loadProfileData = async () => {
+    const data = await AsyncStorage.getItem('profileData');
     
-    // NAVIGATE TO GOAL SETTING PAGE
-    router.replace("/(profileCreation)/goalSetting")
-  }
+    if (data) {
+        const profile = JSON.parse(data);
+        setProfileDiet([...profile.profileDiet])
+  
+    }
+  };
+  
+    const nextSection = async ()=>{
+      // SEND DATA TO SQL LITE FIRST
+      await updateLocalProfileFields({
+            profileDiet:profileDiet
+            })
+      // NAVIGATE TO GOAL SETTING PAGE
+      router.replace("/(profileCreation)/goalSetting")
+    };
+  
+  
+      useEffect(()=>{
+        loadProfileData();
+      },[])
 
   return (
     <ScrollView>

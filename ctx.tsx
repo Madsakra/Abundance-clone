@@ -2,6 +2,7 @@ import { useContext, createContext, type PropsWithChildren, useState, useEffect 
 import { useStorageState } from './useStorageState';
 import { API_ENDPOINT } from './utils';
 import { router } from 'expo-router';
+import axios from 'axios';
 
 // Define the user type
 interface User {
@@ -14,7 +15,6 @@ interface User {
   is_verify:boolean;
   created_at:string;
   updated_at:string;
-  hasProfile?: boolean; // Add hasProfile property
 }
 
 const AuthContext = createContext<{
@@ -55,47 +55,32 @@ export function SessionProvider({ children }: PropsWithChildren) {
       // If a session token exists, fetch user data
       const fetchUserData = async () => {
         if (session) {
-            try {
-                const response = await fetch(`${API_ENDPOINT}/api/v1/user/auth/status`, {
-                    method: 'GET',
-                    headers: {
-                        Authorization: `${session}`,
-                    },
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log(data);
-                    setUser(data); // Save fetched user data globally
-                } else {
-                    console.error('Failed to fetch user data:', response.statusText);
-                    setUser(null); // Clear user data on failure
-                }
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-                setUser(null);
+          try {
+            const response = await axios.get(`${API_ENDPOINT}/api/v1/user/auth/status`, {
+              headers: {
+                Authorization: `${session}`,
+              },
+            });
+      
+            if (response.status === 200) {
+              setUser(response.data); // Save fetched user data globally
+            } else {
+              console.error('Failed to fetch user data:', response.statusText);
+              setUser(null); // Clear user data on failure
             }
-        }
-    };
-
-
-    useEffect(() => {
-      const fetchAndHandleUserData = async () => {
-        await fetchUserData();
-    
-        // After fetching user data, redirect if needed
-        if (user) {
-          // API CALL TO THE SERVER FOR PROFILE CHECKING
-          if (!user.hasProfile) {
-            router.replace('/(profileCreation)/simpleInformation');
-          } else {
-            router.replace('/');
+          } catch (error) {
+            console.error('Error fetching user data:', error); 
+            setUser(null);
           }
         }
       };
+
+
+    useEffect(() => {
+
     
-      fetchAndHandleUserData();
-    }, [session]); // Run when session changes
+      fetchUserData();
+    }, [session]); // Run when session changes                    
 
 
 
@@ -115,7 +100,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
     if (!response.ok) {
       const err = await response.json();
-   
+      setLoading(false);
       throw new Error(`Network response was not ok: ${response.status}`);
     }
 

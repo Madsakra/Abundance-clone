@@ -1,11 +1,12 @@
 import { Entypo } from "@expo/vector-icons"
 import { Link, router } from "expo-router"
 import { ActivityIndicator, Image, StyleSheet, Text, View } from "react-native"
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FlashList } from "@shopify/flash-list";
 import PressableTab from "~/components/PressableTab";
-import { toggleItemInList } from "~/utils"; 
 import FunctionTiedButton from "~/components/FunctionTiedButton";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import LoadingAnimation from "~/components/LoadingAnimation";
 
 
 
@@ -51,38 +52,60 @@ export default function goalSetting() {
   };
 
 
-  const nextSection = ()=>{
-    
-    
-      try{
 
+// load pre-existing data , so user don't have to restart 
+const loadProfileData = async () => {
+  const data = await AsyncStorage.getItem('profileData');
+  if (data) {
+      return JSON.parse(data);
+  }
+};
+
+  const nextSection = async ()=>{
+
+      const profileData = await loadProfileData()
+      console.log(profileData);
+
+      try{
 
         if (profileGoals.length === 0)
         {
           alert("You have yet to select at least 1 goal")
         }
 
-        else{
-          setLoading(true);
-          setTimeout(() => {
-            setLoading(false);
-            router.replace('/(profileCreation)/profileCreated')
-          
-          },2000);
+        else if (profileGoals.length >3)
+        {
+          alert("You can only select up to 3 goals!")
         }
 
+        else{
+          // CALL API TO SEND ALL DATA TO STORAGE
+          setLoading(true);
 
-
+          // ONCE DONE REMOVE ALL DATA FROM INTERNAL STORAGE AND ROUTE THEM TO PROFILE CREATED
+          await AsyncStorage.removeItem('profileData');
+          console.log('Profile data removed');
+          setTimeout(() => {
+          setLoading(false);
+          router.replace('/(profileCreation)/profileCreated')
+        
+          },2000);
+        }
       }
       catch (err){
         console.log(err)
       }
-    
-
-
-
 
   }
+
+  if (loading)
+  {
+    return (
+      <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
+        <LoadingAnimation/>
+      </View>
+    )
+  } 
 
 
   
@@ -130,7 +153,7 @@ export default function goalSetting() {
         />
 
 
-    {loading && <ActivityIndicator size="large" />}
+  
 
   
     </View>

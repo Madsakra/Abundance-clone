@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {  Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
 import { Picker } from "@react-native-picker/picker";
@@ -7,6 +7,8 @@ import DatePicker from "~/components/DatePicker";
 import FunctionTiedButton from "~/components/FunctionTiedButton";
 import { router } from "expo-router";
 import InputContainer from "~/components/InputContainer";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { updateLocalProfileFields } from "~/utils";
 
 
 export default function simpleInformation() {
@@ -33,41 +35,61 @@ export default function simpleInformation() {
   };
 
 
-
-
-
-
-
-
-
-
-
-
-  const nextSection = ()=>{
-    // MAKE CALL TO SQL LITE
-    // SAVE THE IMAGE,NAME, GENDER AND DOB
-
-    // IF SUCCEED, GO TO NEXT PAGE
-
-    try{
-      
-      // IMAGE NOT TAKEN INTO CONSIDERATION FOR NOW --- SETTLE LATER
-      if (image && (name?.trim()!=="") && (gender.trim()!=="") && birthDate)
-      {
-        router.replace("/(profileCreation)/bmrInformation")
-        
-      }
-
-      else{
-        alert("Please Fill Up the form correctly!")
-      }
-
-    }
-    catch(err)
-    {
-
-    }
+// load pre-existing data , so user don't have to restart 
+const loadProfileData = async () => {
+  const data = await AsyncStorage.getItem('profileData');
+  if (data) {
+      const profile = JSON.parse(data);
+      setImage(profile.image);
+      setName(profile.name);
+      setGender(profile.gender);
+      setBirthDate(new Date(profile.birthDate));
   }
+};
+
+
+
+
+
+
+
+
+
+const nextSection = async ()=>{
+
+  // SAVE THE IMAGE,NAME, GENDER AND DOB
+  // IF SUCCEED, GO TO NEXT PAGE
+
+  try{
+    
+    // IMAGE NOT TAKEN INTO CONSIDERATION FOR NOW --- SETTLE LATER
+    if (image && (name?.trim()!=="") && (gender.trim()!=="") && birthDate)
+    {
+      await updateLocalProfileFields({
+        image,
+        name,
+        gender,
+        birthDate: birthDate ? birthDate.toISOString() : null, // Convert Date to ISO string for storage
+      })
+      router.replace("/(profileCreation)/bmrInformation")
+      
+    }
+
+    else{
+      alert("Please Fill Up the form correctly!")
+    }
+
+  }
+  catch(err)
+  {
+
+  }
+}
+
+useEffect(()=>{
+  loadProfileData();
+},[])
+
  
 
     
@@ -115,7 +137,8 @@ export default function simpleInformation() {
             <Picker
               selectedValue={gender}
               onValueChange={(itemValue) => setGender(itemValue)}
-              style={{}}
+              
+              style={{padding:5}}
             >
               <Picker.Item label="Select Your Gender" value="" />
               <Picker.Item label="Male" value="male" />
@@ -159,7 +182,7 @@ const styles = StyleSheet.create({
  },
  
   pageContainer:{
-    borderWidth:1,
+ 
     flex:1,
     padding:20
   },

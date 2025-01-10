@@ -4,11 +4,13 @@ import { useSession } from '../ctx';
 import { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import FunctionTiedButton from "~/components/FunctionTiedButton";
+import { Link, router } from "expo-router";
+import LoadingAnimation from "~/components/LoadingAnimation";
 
 
 
 export default function SignIn() {
-  const { signIn,signOut,isLoading } = useSession();
+  const { signIn,signOut,isLoading} = useSession();
 
   const [email,setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -20,7 +22,11 @@ export default function SignIn() {
     setShowPassword(!showPassword);
 };
 
-
+  const resetSignIn = ()=>{
+    setEmail("");
+    setPassword("")
+  
+  }
 
 const loginCall = async () => {
   try {
@@ -38,8 +44,10 @@ const loginCall = async () => {
       
     }
   } catch (err) {
-    
+    console.log(err);
     alert("Account doesn't exist or wrong credentials.");
+    resetSignIn();
+    router.replace('/sign-in')
   }
 };
 
@@ -48,7 +56,7 @@ const loginCall = async () => {
   {
     return ( 
     <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
-    <ActivityIndicator size="large" />
+      <LoadingAnimation/>
     </View>
     )
   }
@@ -74,8 +82,13 @@ const loginCall = async () => {
       <Text  style={{fontFamily:'Poppins-SemiBold', fontSize:12, marginBottom:20,color:"#8E8E8E"}}>Log in to your account</Text>
     {/* ----------------- HEADER ------------- */}
 
+    <Link href={`/camera-testing`}>
+    <Text>To Test camera</Text>
+    </Link>
 
-
+    <Link href={`/(profileCreation)/simpleInformation`}>
+    <Text>To Profile Creation test</Text>
+    </Link>
 
     {/* ----------------- INPUT SECTION ------------- */}
       <View style={styles.inputSection}>
@@ -126,7 +139,7 @@ const loginCall = async () => {
          title="Login"
       />
 
-          <Pressable style={styles.forgetPassword}>
+          <Pressable style={styles.forgetPassword} onPress={signOut}>
             <Text style={{color:'#989595',fontFamily:"Poppins-Regular",fontSize:14}}>Forget Password?</Text>
         </Pressable>
 
