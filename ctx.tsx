@@ -63,7 +63,9 @@ export function SessionProvider({ children }: PropsWithChildren) {
             });
       
             if (response.status === 200) {
-              setUser(response.data); // Save fetched user data globally
+              console.log(response.data);
+              setUser(response.data.user); // Save fetched user data globally
+
             } else {
               console.error('Failed to fetch user data:', response.statusText);
               setUser(null); // Clear user data on failure
@@ -78,7 +80,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
     useEffect(() => {
 
-    
+      console.log(user?.email);
       fetchUserData();
     }, [session]); // Run when session changes                    
 

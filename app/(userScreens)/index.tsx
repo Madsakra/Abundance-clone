@@ -4,10 +4,10 @@ import { useSession } from '../../ctx';
 import { Button } from '~/components/Button';
 
 export default function Index() {
-  const { signOut,session } = useSession();
+  const { signOut,session,user } = useSession();
   return (
 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>{session}</Text>
+      <Text>{user?.email}</Text>
 
       <Button
         title="Sign Out"

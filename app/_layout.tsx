@@ -41,10 +41,10 @@ export default function RootLayout() {
 
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
     <SessionProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <Slot />
-    </SessionProvider>
     </GestureHandlerRootView>
+    </SessionProvider>
   );
 }
