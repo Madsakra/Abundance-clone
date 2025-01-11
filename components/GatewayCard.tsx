@@ -1,7 +1,8 @@
-import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons'
+import {  Ionicons } from '@expo/vector-icons'
 import { Link, RelativePathString } from 'expo-router';
 import React, { ComponentProps } from 'react'
-import {  Image, ImageProps, StyleSheet, Text, View } from 'react-native'
+import {  Image, ImageProps, Pressable, StyleSheet, Text, View } from 'react-native'
+import FoodLogLink from './FoodLogLink';
 
 
 interface route {
@@ -24,7 +25,7 @@ export default function GatewayCard({headerText,iconName,routeLists,themeColor}:
 
       <View style={styles.outerContainer}>
 
-        <View style={[styles.innerContainer,{borderColor:themeColor}]}>
+        <View style={[styles.innerContainer,{gap:5}]}>
           {/*First row*/}
           <View style={[styles.row,{gap:20}]}>
               <View style={styles.headerCircle}>
@@ -35,22 +36,39 @@ export default function GatewayCard({headerText,iconName,routeLists,themeColor}:
           </View>
 
         {/*Subsequent row*/}
-        {routeLists.map((route,index)=>(
-            <Link href={route.routeRef} 
-             key={index}
-             style={{padding:15}}
-             >
-                <View style={{flexDirection:"row",alignItems:"center",gap:20}}>
-                <Image source={route.image} style={{width:40,height:40}}/>
-                <Text>{route.routeName}</Text>
-                {/* <AntDesign name="arrowright" size={14} color="black" /> */}
-                </View>
-  
-  
-                
-            </Link>
-        ))}
+        {routeLists.map((route,index)=>{
 
+        return(
+            route.routeName === "Food Logging" ?(
+                <FoodLogLink
+                key={index}
+                index={index}
+                image={route.image}
+                routeName={route.routeName}
+                />
+
+            ):
+
+            (
+                <Link href={route.routeRef} 
+                key={index}
+                style={{padding:15,backgroundColor:"#f9f9f9",borderRadius:20}}
+                >
+                   <View style={{flexDirection:"row",alignItems:"center",gap:20}}>
+                   <Image source={route.image} style={{width:50,height:50}}/>
+                   <Text style={{fontFamily:"Poppins-Regular"}}>{route.routeName}</Text>
+             
+                   </View>  
+               </Link>
+
+
+            )
+
+                )
+            
+            
+            
+        })}
 
         </View>
       </View>
@@ -60,7 +78,6 @@ export default function GatewayCard({headerText,iconName,routeLists,themeColor}:
 
 const styles = StyleSheet.create({
     outerContainer:{
-  
         padding:25,
         alignItems:"center",
         justifyContent:"center",
@@ -71,7 +88,8 @@ const styles = StyleSheet.create({
         width:"100%",
         height:"auto",
         padding:5,
-        borderRadius:20
+        borderRadius:20,
+    
     },
 
 

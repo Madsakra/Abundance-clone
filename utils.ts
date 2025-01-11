@@ -17,7 +17,8 @@ function getApiEndpoint() {
 }
 
 export const API_ENDPOINT = getApiEndpoint();
-
+export const EDAMAM_APP_ID = process.env.EXPO_PUBLIC_EDAMAM_APP_ID;
+export const EDAMAM_APP_KEY = process.env.EXPO_PUBLIC_EDAMAM_APP_KEY;
 
 
 

@@ -1,7 +1,7 @@
 import { FontAwesome } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 import { Link, RelativePathString } from "expo-router";
-import { Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import GatewayCard from "~/components/GatewayCard";
 
 
@@ -41,8 +41,9 @@ const glucoseLinks = {
 
 export default function gateway() {
   return (
-    <View style={{flex:1}}>
-       <Text style={{marginTop:20,marginStart:30,fontFamily:"Poppins-Medium",fontSize:15}}>Select your path for management</Text>
+    <ScrollView style={{flex:1}}>
+      
+      <Text style={styles.header}>Select your path for management</Text>
       <GatewayCard
       headerText={calorieLinks.headerText}
       iconName={"flame"}
@@ -61,8 +62,17 @@ export default function gateway() {
     
 
 
-    </View>
+    </ScrollView>
   )
 }
 
 
+const styles = StyleSheet.create({
+  header:{
+    marginTop:20,
+    marginStart:30,
+    fontFamily:"Poppins-SemiBold",
+    fontSize:14,
+    color:"#00ACAC"
+  }
+})

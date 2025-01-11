@@ -54,6 +54,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
       // If a session token exists, fetch user data
       const fetchUserData = async () => {
+        setLoading(true);
         if (session) {
           try {
             const response = await axios.get(`${API_ENDPOINT}/api/v1/user/auth/status`, {
@@ -64,13 +65,18 @@ export function SessionProvider({ children }: PropsWithChildren) {
       
             if (response.status === 200) {
               console.log(response.data);
-              setUser(response.data.user); // Save fetched user data globally
+              setUser(response.data.user);
+              router.replace("/") // Save fetched user data globally
+              setLoading(false);
 
             } else {
+              setLoading(false);
               console.error('Failed to fetch user data:', response.statusText);
               setUser(null); // Clear user data on failure
+             
             }
           } catch (error) {
+            setLoading(false);
             console.error('Error fetching user data:', error); 
             setUser(null);
           }
