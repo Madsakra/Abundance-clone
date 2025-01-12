@@ -53,12 +53,23 @@ export default function RootLayout() {
 		if (initializing) return;
 		
 		const inAuthGroup = segments[0] === '(userScreens)';
+		console.log(inAuthGroup)
+
 
 		if (user && !inAuthGroup) {
 			router.replace('/');
-		} else if (!user && inAuthGroup) {
+
+		} 
+		
+		else if (!user && inAuthGroup) {
 			router.replace('/sign-in');
 		}
+
+		else if (!user && !inAuthGroup)
+		{
+			router.replace('/sign-in')
+		}
+
 	}, [user, initializing]);
 
 
