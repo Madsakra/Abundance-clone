@@ -17,6 +17,8 @@
           "launchMode": "most-recent"
         }
       ],
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
       "expo-secure-store",
       "expo-font",
       [
@@ -24,8 +26,18 @@
         {
           "cameraPermissionText": "$(PRODUCT_NAME) needs access to your Camera."
         }
-    ]
-  ],
+      ],
+      [
+        "expo-build-properties",{
+          "ios":{
+              "useFrameworks":"static"
+  
+          } 
+        }
+
+      ]
+
+    ],
     "experiments": {
       "typedRoutes": true,
       "tsconfigPaths": true
@@ -43,14 +55,16 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.axmen.AbundanceApp"
+      "bundleIdentifier": "com.axmen.AbundanceApp",
+      "googleServicesFile":"./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.axmen.AbundanceApp"
+      "package": "com.axmen.AbundanceApp",
+      "googleServicesFile":"./google-services.json"
     },
     "extra": {
       "router": {

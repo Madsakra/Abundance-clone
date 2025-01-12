@@ -1,20 +1,21 @@
 
 import { View,StyleSheet, Text, Pressable, Image,TextInput, ActivityIndicator } from "react-native";
-import { useSession } from '../ctx';
+
 import { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import FunctionTiedButton from "~/components/FunctionTiedButton";
 import { Link, router } from "expo-router";
 import LoadingAnimation from "~/components/LoadingAnimation";
-
+import auth from '@react-native-firebase/auth';
+import { FirebaseError } from 'firebase/app';
 
 
 export default function SignIn() {
-  const { signIn,signOut,isLoading} = useSession();
+
 
   const [email,setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-
+	const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   // Function to toggle the password visibility state
@@ -39,20 +40,20 @@ const loginCall = async () => {
       alert("Please enter a valid email address!");
     } else {
       // Call sign-in function with email and password
-      await signIn(email, password);
+    	await auth().signInWithEmailAndPassword(email, password);
     
       
     }
-  } catch (err) {
-    console.log(err);
-    alert("Account doesn't exist or wrong credentials.");
-    resetSignIn();
-    router.replace('/sign-in')
+  } catch (e:any) {
+    const err = e as FirebaseError;
+    alert(`Either you have provided the wrong credentials or the account doesn't exist `);
+  } finally {
+    setLoading(false);
   }
 };
 
 
-  if (isLoading)
+  if (loading)
   {
     return ( 
     <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
@@ -139,7 +140,7 @@ const loginCall = async () => {
          title="Login"
       />
 
-          <Pressable style={styles.forgetPassword} onPress={signOut}>
+          <Pressable style={styles.forgetPassword}>
             <Text style={{color:'#989595',fontFamily:"Poppins-Regular",fontSize:14}}>Forget Password?</Text>
         </Pressable>
 

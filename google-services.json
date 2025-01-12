@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "162707020216",
+    "project_id": "abundance-3f9ab",
+    "storage_bucket": "abundance-3f9ab.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:162707020216:android:42a0ba916821dc7715174d",
+        "android_client_info": {
+          "package_name": "com.axmen.AbundanceApp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCtKrhPlORHZg_XLKg2sgf00tbs-bJtgU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

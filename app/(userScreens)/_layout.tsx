@@ -1,34 +1,23 @@
-import { AntDesign, FontAwesome, FontAwesome5, Ionicons, MaterialCommunityIcons} from '@expo/vector-icons';
+import { AntDesign, FontAwesome} from '@expo/vector-icons';
 import { Drawer } from 'expo-router/drawer';
 
 import { Image, Text, View } from 'react-native';
 import { Link, Redirect, router } from 'expo-router';
 
-import { useSession } from '../../ctx';
+import auth from '@react-native-firebase/auth';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
+import firestore from '@react-native-firebase/firestore';
+import { UserProfileProvider, useUserProfile } from '~/ctx';
+
 
 
 
 
 function CustomDrawerContent(props:any) {
 
-  const { signOut,user,isLoading,session } = useSession();
-
   const {bottom}= useSafeAreaInsets();
-
-    if (isLoading) {
-      return <Text>Loading...</Text>;
-    };
- 
-    if (!session) {
-      // On web, static rendering will stop here as the user is not authenticated
-      // in the headless Node process that the pages are rendered in.
-      return <Redirect href="/sign-in" />;
-    };
-
- 
-  
+  const user = auth().currentUser;
     return (
       <View style={{flex:1}}>
           <DrawerContentScrollView 
@@ -40,8 +29,8 @@ function CustomDrawerContent(props:any) {
               <View style={{width:70,height:70,borderRadius:50,backgroundColor:"gray"}}/>
 
               <View style={{justifyContent:"center"}}>
-              <Text style={{fontFamily:"Poppins-Bold",fontSize:20,color:"#00ACAC",flexShrink:1}}>{user?.username}</Text>
-              <Text style={{fontFamily:"Poppins-Regular",fontSize:12}}>{user?.email}</Text>
+              <Text style={{fontFamily:"Poppins-Bold",fontSize:20,color:"#00ACAC",flexShrink:1}}>{user?.uid}</Text>
+              <Text style={{fontFamily:"Poppins-Regular",fontSize:12}}>{user?.email}</Text> 
               </View>
       
           </View>
@@ -61,7 +50,7 @@ function CustomDrawerContent(props:any) {
               >
                 <DrawerItem label={"Logout"}
                 activeBackgroundColor='#00ACAC'
-                onPress={signOut}  icon={({ size, color }) => (
+                onPress={() => auth().signOut()} icon={({ size, color }) => (
                   <AntDesign name="logout" size={size} color={color}/>
                 
                 )} />
@@ -72,7 +61,13 @@ function CustomDrawerContent(props:any) {
 
 
 const DrawerLayout = () => {
-  
+
+
+
+
+
+
+
 
 
   return (
