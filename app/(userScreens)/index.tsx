@@ -14,36 +14,36 @@ export default function Index() {
 
   const { profile, setProfile, clearProfile } = useUserProfile();
 
-  const checkUserProfile = async () => {
-    try {
-      // Retrieve the document for the user's UID
-      const documentSnapshot = await firestore()
-      .collection('profiles')
-      .doc(user?.uid)
-      .get(); // Use get() for a one-time read
+  // const checkUserProfile = async () => {
+  //   try {
+  //     // Retrieve the document for the user's UID
+  //     const documentSnapshot = await firestore()
+  //     .collection('profiles')
+  //     .doc(user?.uid)
+  //     .get(); // Use get() for a one-time read
     
-      if (documentSnapshot.exists) {
-      // Profile exists
-      const userProfile = documentSnapshot.data();
-      console.log('User profile found:', userProfile);
+  //     if (documentSnapshot.exists) {
+  //     // Profile exists
+  //     const userProfile = documentSnapshot.data();
+  //     console.log('User profile found:', userProfile);
   
 
-      } else {
-      // Profile does not exist
-      console.log('No profile found for this user.');
-      router.replace("/(profileCreation)/simpleInformation")
-      return null;
-      }
-    } catch (error) {
-      console.error('Error checking user profile:', error);
-      throw error;
-    }
-    };
+  //     } else {
+  //     // Profile does not exist
+  //     console.log('No profile found for this user.');
+  //     router.replace("/(profileCreation)/simpleInformation")
+  //     return null;
+  //     }
+  //   } catch (error) {
+  //     console.error('Error checking user profile:', error);
+  //     throw error;
+  //   }
+  //   };
 
 
-    useEffect(()=>{
-      checkUserProfile();
-    },[])
+  //   useEffect(()=>{
+  //     checkUserProfile();
+  //   },[])
 
 
 

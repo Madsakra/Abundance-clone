@@ -17,7 +17,7 @@ export default function CookedMeals() {
     const PAGE_SIZE = 10; // Number of results per page
 
 
-    
+  
    
 
 
@@ -25,8 +25,8 @@ export default function CookedMeals() {
     const params = {
         type: "public",
         q: foodName,
-        app_id: "569abc82",
-        app_key: "0e9a1db25af81668a3958305c56299b4",
+        app_id: EDAMAM_APP_ID,
+        app_key: EDAMAM_APP_KEY,
         imageSize: "SMALL",
         random: true,
       };

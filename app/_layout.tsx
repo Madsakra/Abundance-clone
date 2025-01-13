@@ -50,15 +50,14 @@ export default function RootLayout() {
 
 
   useEffect(() => {
+	
 		if (initializing) return;
-		
 		const inAuthGroup = segments[0] === '(userScreens)';
 		console.log(inAuthGroup)
 
 
 		if (user && !inAuthGroup) {
 			router.replace('/');
-
 		} 
 		
 		else if (!user && inAuthGroup) {
