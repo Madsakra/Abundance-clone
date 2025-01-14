@@ -76,10 +76,6 @@ export default function SignIn() {
           </Text>
           {/* ----------------- HEADER ------------- */}
 
-          <Link href="/camera-testing">
-            <Text>To Test camera</Text>
-          </Link>
-
           <Link href="/(profileCreation)/simpleInformation">
             <Text>To Profile Creation test</Text>
           </Link>
