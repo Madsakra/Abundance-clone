@@ -11,10 +11,9 @@ npm-debug.*
 web-build/
 # expo router
 expo-env.d.ts
-
-.env
-GoogleService-Info.plist
 google-services.json
+GoogleService-Info.plist
+.env
 *.plist
 ios
 android

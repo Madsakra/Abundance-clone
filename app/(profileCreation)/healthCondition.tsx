@@ -5,21 +5,58 @@ import PressableTab from "~/components/PressableTab";
 import { FlashList } from "@shopify/flash-list";
 import { useEffect, useState } from "react";
 import FunctionTiedButton from "~/components/FunctionTiedButton";
-import { toggleItemInList, updateLocalProfileFields } from "~/utils";
+import {  updateLocalProfileFields } from "~/utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-export default function healthInformation() {
-
-  const healthConditions = ["Type 2 Diabets","High Blood Pressure",
-    "Type 1 Diabetes","High Cholesterol","Low Glucose Levels","Low Blood Pressure"];
-
-
- const [profileHealthCondi,setProfileHealthCondi] = useState<string[]>([]);
+import firestore from '@react-native-firebase/firestore';
 
 
 
-const handleHealthCondi = (healthCondition: string) => {
-  toggleItemInList(healthCondition,setProfileHealthCondi)
+type HealthCondi = {
+  id:string,
+  name:string,
+}
+
+
+export default function healthCondition() {
+
+  const [healthCondis,setHealthCondis] = useState<HealthCondi[]>([]);
+  const [profileHealthCondi,setProfileHealthCondi] = useState<HealthCondi[]>([]);
+
+  const loadHealthConditions = async () => {
+    try {
+      const querySnapshot = await firestore().collection('health_conditions').get();
+  
+      const temp: HealthCondi[] = querySnapshot.docs.map(documentSnapshot => ({
+        id: documentSnapshot.id,
+        name: documentSnapshot.data().name,
+      }));
+      setHealthCondis(temp)
+      
+    } catch (error) {
+      console.error('Error loading health conditions: ', error);
+    }
+  };
+
+  useEffect(()=>{
+    loadHealthConditions();
+  },[])
+
+
+const handleHealthCondi = (newHealthCondi: HealthCondi) => {
+  // set health condi if selected, unselect if tapped again
+  // also make sure no double entries
+  setProfileHealthCondi((prevState) => {
+    // Check if the condition is already selected
+    const exists = prevState.some((condition) => condition.id === newHealthCondi.id);
+
+    if (exists) {
+      // If it exists, remove it (deselect)
+      return prevState.filter((condition) => condition.id !== newHealthCondi.id);
+    } else {
+      // If it doesn't exist, add it (select)
+      return [...prevState, newHealthCondi];
+    }
+  });
 };
 
 
@@ -32,6 +69,7 @@ const loadProfileData = async () => {
 
   }
 };
+
 
 
   const nextSection = async ()=>{
@@ -64,16 +102,19 @@ const loadProfileData = async () => {
         <View style={styles.listBox}>
       
         <FlashList
-        data={healthConditions}        
+        data={healthCondis}
+        extraData={profileHealthCondi}        
         renderItem={({ item }) =>         
         <PressableTab
         editable={true} 
-        isPressed={profileHealthCondi.includes(item)} // Highlight if selected
+        isPressed={profileHealthCondi.some(
+          (condition) => condition.id === item.id // Ensure you're comparing by id
+        )}
         tabBoxStyle={styles.tabBox}
         handleInfo={handleHealthCondi}
         tabTextStyle={styles.tabTextStyle}
         tabValue={item}/>}
-        keyExtractor={(item) => item}
+        keyExtractor={(item) => item.id}
         estimatedItemSize={100}
         contentContainerStyle={styles.listContainer}
         />

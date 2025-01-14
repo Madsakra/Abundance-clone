@@ -1,4 +1,4 @@
-{
+export default {
   "expo": {
     "name": "Abundance-App",
     "slug": "Abundance-App",
@@ -56,7 +56,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.axmen.AbundanceApp",
-      "googleServicesFile":"./GoogleService-Info.plist"
+       googleServicesFile: process.env.GOOGLE_SERVICES_INFO_PLIST ?? './GoogleService-Info.plist',
     },
     "android": {
       "adaptiveIcon": {
@@ -64,7 +64,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.axmen.AbundanceApp",
-      "googleServicesFile":"./google-services.json"
+       googleServicesFile: process.env.GOOGLE_SERVICES_JSON ?? './google-services.json',
     },
     "extra": {
       "router": {

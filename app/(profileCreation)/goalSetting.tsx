@@ -1,17 +1,20 @@
 import { Entypo } from "@expo/vector-icons"
 import { Link, router } from "expo-router"
-import { ActivityIndicator, Image, StyleSheet, Text, View } from "react-native"
-import { useState } from "react";
+import { Image, StyleSheet, Text, View } from "react-native"
+import { useEffect, useState } from "react";
 import { FlashList } from "@shopify/flash-list";
 import PressableTab from "~/components/PressableTab";
 import FunctionTiedButton from "~/components/FunctionTiedButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LoadingAnimation from "~/components/LoadingAnimation";
+import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 
 
+import auth from '@react-native-firebase/auth';
 
 type Goal = {
-  id: number;
+  id: string;
   name: string;
   value: number;
 
@@ -24,33 +27,81 @@ export default function goalSetting() {
 
 
 
-  const allGoals:Goal[] = [
-    {id:1,name:"< 1800 kcal / day",value:1800},
-    {id:2,name:"< 2000 kcal / day",value:2000},
-    {id:3,name:"< 2300 kcal / day",value:2200},
-    {id:4,name:"< 5.0 mmo/L before Food",value:5.0},
-    {id:5,name:"< 6.0 mmo/L before Food",value:6.0},
-    {id:6,name:"< 7.0 mmo/L after Food",value:7.0},
-  ]
-  
-
-
+  const [allGoals,setAllGoals] = useState<Goal[]>([]);
   const [profileGoals,setProfileGoals] = useState<Goal[]>([])
   const [loading,setLoading] = useState(false)
 
-  const handleGoals = (goal: { id: number; name: string; value: number }) => {
-    const exists = profileGoals.some((item) => item.id === goal.id);
+  const user = auth().currentUser;
+  const uid = user ? user.uid : null;  
+
+
+
+    // CALL DB
+    const loadAllGoals = async () => {
+      try {
+        const querySnapshot = await firestore().collection('goals').get();
+    
+        const temp: Goal[] = querySnapshot.docs.map(documentSnapshot => ({
+          id: documentSnapshot.id,
+          name: documentSnapshot.data().name,
+          value:documentSnapshot.data().value,
+        }));
+        setAllGoals(temp)
+        
+      } catch (error) {
+        console.error('Error loading health conditions: ', error);
+      }
+    };
+
+
+
+
+
+
+
+  const handleGoals = (newGoal: Goal) => {
+    // set health condi if selected, unselect if tapped again
+    // also make sure no double entries
+    setProfileGoals((prevState) => {
+      // Check if the condition is already selected
+      const exists = prevState.some((oldGoal) => oldGoal.id === newGoal.id);
   
-    if (exists) {
-      // Remove the goal if it exists
-      setProfileGoals((prev) => prev.filter((item) => item.id !== goal.id));
-    } else {
-      // Add the goal if it doesn't exist
-      setProfileGoals((prev) => [...prev, goal]);
-    }
-  
+      if (exists) {
+        // If it exists, remove it (deselect)
+        return prevState.filter((oldGoal) => oldGoal.id !== newGoal.id);
+      } else {
+        // If it doesn't exist, add it (select)
+        return [...prevState, newGoal];
+      }
+    });
   };
 
+
+const pushDataToFirebase = async ()=>{
+  const profileData = await loadProfileData()
+  console.log(profileData);
+  console.log(profileGoals);
+  console.log(uid);
+
+  const finalProfile = {
+    goals:profileGoals,
+    ...profileData,
+  }
+  // console.log(profileData.image)
+  // const reference = storage().ref(`${uid}-profile-picture`);
+  // console.log(reference);
+  if (uid)
+  {
+    await firestore()
+    .collection('profiles')
+    .doc(uid) // Use the current UID as the document ID
+    .set(finalProfile);
+     console.log('Profile created successfully!');
+  }
+
+
+
+}
 
 
 // load pre-existing data , so user don't have to restart 
@@ -63,9 +114,10 @@ const loadProfileData = async () => {
 
   const nextSection = async ()=>{
 
-      const profileData = await loadProfileData()
-      console.log(profileData);
 
+
+
+      
       try{
 
         if (profileGoals.length === 0)
@@ -82,9 +134,13 @@ const loadProfileData = async () => {
           // CALL API TO SEND ALL DATA TO STORAGE
           setLoading(true);
 
+
+          await pushDataToFirebase();
+
+
           // ONCE DONE REMOVE ALL DATA FROM INTERNAL STORAGE AND ROUTE THEM TO PROFILE CREATED
           await AsyncStorage.removeItem('profileData');
-          console.log('Profile data removed');
+          console.log('Profile data removed in local');
           setTimeout(() => {
           setLoading(false);
           router.replace('/(profileCreation)/profileCreated')
@@ -93,10 +149,16 @@ const loadProfileData = async () => {
         }
       }
       catch (err){
-        console.log(err)
+        console.log("Error creating profile",err)
       }
-
   }
+
+  
+      useEffect(()=>{
+        loadAllGoals();
+        loadProfileData();
+      },[])
+
 
   if (loading)
   {
@@ -122,25 +184,23 @@ const loadProfileData = async () => {
     <Image source={require("assets/profileCreation/goal.jpg")} style={{width:100,height:100,alignSelf:"center", marginBottom:20}}/>
 
     <View style={styles.listBox}>
-
-      <FlashList
+        <FlashList
         data={allGoals}
-        renderItem={({ item }) => (
-          <PressableTab
-                 editable={true}
-                        tabBoxStyle={styles.tabBox}
-                        handleInfo={handleGoals}
-                        tabTextStyle={styles.tabTextStyle}
-                        tabValue={item} // This now matches the expected type
-    
-                        isPressed={profileGoals.some((goal) => goal.id === item.id)} // Check if the goal is selected
-          />
+        extraData={profileGoals}        
+        renderItem={({ item }) =>         
+        <PressableTab
+        editable={true} 
+        isPressed={profileGoals.some(
+          (condition) => condition.id === item.id // Ensure you're comparing by id
         )}
-        keyExtractor={(item) => item.id.toString()}
+        tabBoxStyle={styles.tabBox}
+        handleInfo={handleGoals}
+        tabTextStyle={styles.tabTextStyle}
+        tabValue={item}/>}
+        keyExtractor={(item) => item.id}
         estimatedItemSize={100}
-        numColumns={1}
         contentContainerStyle={styles.listContainer}
-      />
+        />
     </View>
 
 

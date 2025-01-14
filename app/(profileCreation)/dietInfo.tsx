@@ -6,19 +6,61 @@ import React, { useEffect, useState } from 'react'
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import FunctionTiedButton from '~/components/FunctionTiedButton';
 import PressableTab from '~/components/PressableTab';
-import { toggleItemInList, updateLocalProfileFields } from '~/utils';
+import {  updateLocalProfileFields } from '~/utils';
+import firestore from '@react-native-firebase/firestore';
+
+
+
+type Diet = {
+  id:string,
+  name:string,
+}
+
 
 export default function dietInfo() {
 
-    const allDiets = ["Omnivore","Low Sugar","Low Fat",
-        "Vegetarian","Ketosis","Pescatarian","Gluten-Free",
-        "Dairy-Free","Nut-Free","Soy-Free","Halal","Kosher","Paleo"];
+    const [allDiets,setAllDiets] = useState<Diet[]>();
     
-    const [profileDiet,setProfileDiet] = useState<string[]>([]);
+    const [profileDiet,setProfileDiet] = useState<Diet[]>([]);
     
-    const handleDiet = (diet: string) => {
-    toggleItemInList(diet,setProfileDiet)
+    // CALL DB
+    const loadAllDiets = async () => {
+      try {
+        const querySnapshot = await firestore().collection('dietary_restrictions').get();
+    
+        const temp: Diet[] = querySnapshot.docs.map(documentSnapshot => ({
+          id: documentSnapshot.id,
+          name: documentSnapshot.data().name,
+        }));
+        setAllDiets(temp)
+        
+      } catch (error) {
+        console.error('Error loading health conditions: ', error);
+      }
     };
+  
+
+
+
+    const handleDiet = (newDiet: Diet) => {
+      // set health condi if selected, unselect if tapped again
+      // also make sure no double entries
+      setProfileDiet((prevState) => {
+        // Check if the condition is already selected
+        const exists = prevState.some((oldDiet) => oldDiet.id === newDiet.id);
+    
+        if (exists) {
+          // If it exists, remove it (deselect)
+          return prevState.filter((oldDiet) => oldDiet.id !== newDiet.id);
+        } else {
+          // If it doesn't exist, add it (select)
+          return [...prevState, newDiet];
+        }
+      });
+    };
+
+
+
 
   // load pre-existing data , so user don't have to restart 
   const loadProfileData = async () => {
@@ -42,13 +84,14 @@ export default function dietInfo() {
   
   
       useEffect(()=>{
+        loadAllDiets();
         loadProfileData();
       },[])
 
   return (
     <ScrollView>
         
-        <Link href="/(profileCreation)/healthInformation" style={{marginHorizontal:20,marginVertical:25}}>
+        <Link href="/(profileCreation)/healthCondition" style={{marginHorizontal:20,marginVertical:25}}>
             <Entypo name="chevron-thin-left" size={24} color="black" />
         </Link>
 
@@ -60,17 +103,19 @@ export default function dietInfo() {
         <View style={styles.listBox}>
       
         <FlashList
-        data={allDiets}  
-              
+        data={allDiets}
+        extraData={profileDiet}        
         renderItem={({ item }) =>         
         <PressableTab
         editable={true} 
-        isPressed={profileDiet.includes(item)} // Highlight if selected
+        isPressed={profileDiet.some(
+          (condition) => condition.id === item.id // Ensure you're comparing by id
+        )}
         tabBoxStyle={styles.tabBox}
         handleInfo={handleDiet}
         tabTextStyle={styles.tabTextStyle}
         tabValue={item}/>}
-        keyExtractor={(item) => item}
+        keyExtractor={(item) => item.id}
         estimatedItemSize={100}
         contentContainerStyle={styles.listContainer}
         />

@@ -37,7 +37,7 @@ const loadProfileData = async () => {
                 })
 
 
-          router.replace("/(profileCreation)/healthInformation");
+          router.replace("/(profileCreation)/healthCondition");
         } else {
           // Alert user if height or weight is invalid
           alert("Please fill in both height and weight correctly! Values must be greater than 0.");
