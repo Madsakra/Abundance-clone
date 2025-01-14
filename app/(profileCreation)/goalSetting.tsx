@@ -6,7 +6,7 @@ import { FlashList } from '@shopify/flash-list';
 import { Link, router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
-
+import storage from '@react-native-firebase/storage';
 import FunctionTiedButton from '~/components/FunctionTiedButton';
 import LoadingAnimation from '~/components/LoadingAnimation';
 import PressableTab from '~/components/PressableTab';
@@ -64,13 +64,27 @@ export default function GoalSetting() {
     console.log(profileGoals);
     console.log(uid);
 
+  
+    console.log(profileData.image)
+    const reference = storage().ref(`${uid}-profile-picture`);
+    const pathToFile = profileData.image;
+    // uploads file
+    await reference.putFile(pathToFile);
+    // GET URL
+    const url = await reference.getDownloadURL();
+    console.log(url);
+
     const finalProfile = {
+      image:url,
+      birthDate:profileData.birthDate,
+      gender:profileData.gender,
+      height:JSON.parse(profileData.height),
+      weight:JSON.parse(profileData.weight),
+      profileDiet:profileData.profileDiet,
+      profileHealthCondi:profileData.profileHealthCondi,
       goals: profileGoals,
-      ...profileData,
     };
-    // console.log(profileData.image)
-    // const reference = storage().ref(`${uid}-profile-picture`);
-    // console.log(reference);
+
     if (uid) {
       await firestore()
         .collection('profiles')
