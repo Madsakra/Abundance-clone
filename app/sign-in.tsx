@@ -87,9 +87,6 @@ const loginCall = async () => {
     <Text>To Test camera</Text>
     </Link>
 
-    <Link href={`/(profileCreation)/simpleInformation`}>
-    <Text>To Profile Creation test</Text>
-    </Link>
 
     {/* ----------------- INPUT SECTION ------------- */}
       <View style={styles.inputSection}>

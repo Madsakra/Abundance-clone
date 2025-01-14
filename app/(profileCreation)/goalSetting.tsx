@@ -87,7 +87,8 @@ const pushDataToFirebase = async ()=>{
     goals:profileGoals,
     ...profileData,
   }
-  // console.log(profileData.image)
+  console.log(profileData.image)
+  // TO UPLOAD IMAGE TO THE STORAGE
   // const reference = storage().ref(`${uid}-profile-picture`);
   // console.log(reference);
   if (uid)
