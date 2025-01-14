@@ -1,5 +1,4 @@
-
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 // Define the shape of the user profile data
 interface UserProfile {
@@ -7,7 +6,7 @@ interface UserProfile {
   name: string;
   email: string;
   avatarUrl: string; // Optional
-  age: number;       // Optional
+  age: number; // Optional
 }
 
 // Define the context value structure
@@ -49,7 +48,7 @@ export const UserProfileProvider: React.FC<UserProfileProviderProps> = ({ childr
 export const useUserProfile = (): UserProfileContextValue => {
   const context = useContext(UserProfileContext);
   if (!context) {
-    throw new Error("useUserProfile must be used within a UserProfileProvider");
+    throw new Error('useUserProfile must be used within a UserProfileProvider');
   }
   return context;
 };
