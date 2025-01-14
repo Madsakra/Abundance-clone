@@ -66,7 +66,7 @@ export default function HealthCondition() {
   const nextSection = async () => {
     // SEND DATA TO SQL LITE FIRST
     await updateLocalProfileFields({
-      profileHealthCondi: profileHealthCondi,
+      profileHealthCondi,
     });
     // NAVIGATE TO GOAL SETTING PAGE
     router.replace('/(profileCreation)/dietInfo');
@@ -100,7 +100,7 @@ export default function HealthCondition() {
           extraData={profileHealthCondi}
           renderItem={({ item }) => (
             <PressableTab
-              editable={true}
+              editable
               isPressed={profileHealthCondi.some(
                 (condition) => condition.id === item.id // Ensure you're comparing by id
               )}

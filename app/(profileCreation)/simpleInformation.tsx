@@ -19,7 +19,7 @@ export default function SimpleInformation() {
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images', 'videos'],
       allowsEditing: true,
       aspect: [4, 3],
@@ -62,7 +62,9 @@ export default function SimpleInformation() {
       } else {
         alert('Please Fill Up the form correctly!');
       }
-    } catch (err) {}
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
@@ -95,7 +97,7 @@ export default function SimpleInformation() {
       {/* FORM CONTAINER*/}
       <View style={styles.formsContainer}>
         {/* Name Input */}
-        <InputContainer width={'100%'} inputLabel="Name">
+        <InputContainer width="100%" inputLabel="Name">
           <TextInput
             placeholder="Enter your Name"
             value={name}
