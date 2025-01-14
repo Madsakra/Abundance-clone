@@ -57,10 +57,7 @@ export const UserProfileProvider: React.FC<{children:React.ReactNode}> = ({ chil
   const onAuthStateChanged = async (user: FirebaseAuthTypes.User | null) => {
      setLoading(true);  
      console.log("user:", user);
-      
- 
-
-
+    
       if (user)
       {
 
