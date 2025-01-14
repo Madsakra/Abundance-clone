@@ -74,9 +74,6 @@ export default function SignIn() {
             }}>
             Log in to your account
           </Text>
-
-
-          {/* ----------------- INPUT SECTION ------------- */}
           <View style={styles.inputSection}>
             <View
               style={{
