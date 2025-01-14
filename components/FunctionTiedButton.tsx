@@ -1,18 +1,21 @@
-import { Pressable, StyleProp, StyleSheet, Text, TextStyle, ViewStyle } from "react-native"
+import { Pressable, StyleProp, Text, TextStyle, ViewStyle } from 'react-native';
 
 interface CustomButtonProps {
-    onPress: () => void;
-    title: string;
-    buttonStyle?: StyleProp<ViewStyle>;
-    textStyle?: StyleProp<TextStyle>;
-  }
+  onPress: () => void;
+  title: string;
+  buttonStyle?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
+}
 
-
-export default function FunctionTiedButton({onPress,title,buttonStyle,textStyle}:CustomButtonProps) {
+export default function FunctionTiedButton({
+  onPress,
+  title,
+  buttonStyle,
+  textStyle,
+}: CustomButtonProps) {
   return (
-
     <Pressable style={buttonStyle} onPress={onPress}>
-        <Text  style={textStyle}>{title}</Text>
+      <Text style={textStyle}>{title}</Text>
     </Pressable>
-  )
+  );
 }

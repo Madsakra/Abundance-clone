@@ -3,7 +3,7 @@ import { Slot, SplashScreen, useRouter, useSegments } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import { UserProfileProvider } from '~/ctx';
+import { UserAccountProvider, UserProfileProvider } from '~/ctx';
 
 export default function RootLayout() {
   SplashScreen.preventAutoHideAsync();
@@ -64,10 +64,12 @@ export default function RootLayout() {
   }, [user, initializing]);
 
   return (
-    <UserProfileProvider>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <Slot />
-      </GestureHandlerRootView>
-    </UserProfileProvider>
+    <UserAccountProvider>
+      <UserProfileProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <Slot />
+        </GestureHandlerRootView>
+      </UserProfileProvider>
+    </UserAccountProvider>
   );
 }

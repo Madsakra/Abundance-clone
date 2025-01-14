@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { UserAccount } from './types/users/account';
 
 export const EDAMAM_APP_ID = process.env.EXPO_PUBLIC_EDAMAM_ID;
 export const EDAMAM_APP_KEY = process.env.EXPO_PUBLIC_EDAMAM_APP_KEY;

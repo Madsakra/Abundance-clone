@@ -1,17 +1,13 @@
-import { Stack, Tabs } from 'expo-router';
-
-
+import { Stack } from 'expo-router';
 
 export default function Layout() {
   return (
     <Stack
       screenOptions={{
-        headerShown:false
+        headerShown: false,
       }}
-      initialRouteName="gateway"
-      >
-      
-      <Stack.Screen name="gateway"/>
+      initialRouteName="gateway">
+      <Stack.Screen name="gateway" />
       {/* <Stack.Screen name="calories/caloriesInput"/>
       <Stack.Screen name="calories/caloriesGraph"/>
       <Stack.Screen name="calories/addMeals"/>
@@ -19,10 +15,7 @@ export default function Layout() {
       <Stack.Screen name="calories/addActivity"/>
       <Stack.Screen name="calories/netCalories"/> */}
 
-
-
       {/* <Stack.Screen name="glucose/glucoseLogging"/> */}
-      
     </Stack>
   );
 }

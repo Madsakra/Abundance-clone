@@ -1,80 +1,65 @@
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import auth from '@react-native-firebase/auth';
-
-import { Button } from '~/components/Button';
-import { useUserProfile } from '~/ctx';
-import firestore from '@react-native-firebase/firestore';
-import { useEffect, useState } from 'react';
-import { router } from 'expo-router';
-
+import { StyleSheet, Text, View } from 'react-native';
 
 export default function Index() {
-
   const user = auth().currentUser;
 
-
-
   return (
-<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-  
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>Dashboard</Text>
-
     </View>
   );
 }
 
-
-
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   alertBox: {
     width: 300,
     padding: 20,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 10,
-    alignItems: "center",
-    shadowColor: "#000",
+    alignItems: 'center',
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
   },
   svgContainer: {
-      borderRadius:50,
-      height:100,
-      width:100,
-      borderWidth:2,
-      marginBottom:20,
-      justifyContent:"center",
-      alignItems:"center",
-      
+    borderRadius: 50,
+    height: 100,
+    width: 100,
+    borderWidth: 2,
+    marginBottom: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   message: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 20,
-    textAlign: "center",
+    textAlign: 'center',
   },
   buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
   },
   noButton: {
     flex: 1,
     marginRight: 10,
-    backgroundColor: "#e0e0e0",
+    backgroundColor: '#e0e0e0',
     paddingVertical: 10,
     borderRadius: 5,
-    alignItems: "center",
+    alignItems: 'center',
   },
   noButtonText: {
-    fontFamily:"Poppins-Regular",
+    fontFamily: 'Poppins-Regular',
     fontSize: 16,
   },
   saveButton: {
@@ -83,12 +68,11 @@ const styles = StyleSheet.create({
 
     paddingVertical: 10,
     borderRadius: 5,
-    alignItems: "center",
+    alignItems: 'center',
   },
   saveButtonText: {
-      fontFamily:"Poppins-Bold",
-    color: "white",
+    fontFamily: 'Poppins-Bold',
+    color: 'white',
     fontSize: 16,
   },
-
-})
+});

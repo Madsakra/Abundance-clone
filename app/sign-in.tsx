@@ -1,6 +1,5 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import auth from '@react-native-firebase/auth';
-import { Link } from 'expo-router';
 import { FirebaseError } from 'firebase/app';
 import { useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';

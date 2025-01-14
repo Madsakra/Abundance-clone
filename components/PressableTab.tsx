@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Pressable, StyleProp, StyleSheet, Text, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native'
+import { useState } from 'react';
+import { StyleProp, Text, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { SvgProps } from 'react-native-svg';
 
 type PressableTabProps<T> = {
@@ -10,9 +10,8 @@ type PressableTabProps<T> = {
   editable: boolean;
   handleInfo?: (diet: T) => void;
   SvgIcon?: React.FC<SvgProps>; // Optional SVG icon
-  isPressed?: boolean; 
+  isPressed?: boolean;
 };
-
 
 export default function PressableTab<T>({
   tabBoxStyle,
@@ -21,46 +20,35 @@ export default function PressableTab<T>({
   editable,
   handleInfo,
   SvgIcon,
-  isPressed
+  isPressed,
 }: PressableTabProps<T>) {
+  const [pressed, setPressed] = useState(false);
 
-  const [pressed,setPressed] = useState(false);
+  const pressedStyle = [tabBoxStyle, { backgroundColor: '#6B7FD6' }];
+  const unpressedStyle = [tabBoxStyle, { backgroundColor: '#949494' }];
 
-  const pressedStyle = [tabBoxStyle,{backgroundColor:'#6B7FD6'}]
-  const unpressedStyle = [tabBoxStyle,{backgroundColor:'#949494'}]
-
-  const handlePress = ()=>{
-    if (handleInfo)
-    {
+  const handlePress = () => {
+    if (handleInfo) {
       setPressed((prev) => !prev);
       handleInfo(tabValue);
     }
-  }
+  };
 
   const displayText =
-  typeof tabValue === 'object' && tabValue !== null
-    ? (tabValue as any).name // Safely access object property
-    : String(tabValue); // Convert primitive to string
+    typeof tabValue === 'object' && tabValue !== null
+      ? (tabValue as any).name // Safely access object property
+      : String(tabValue); // Convert primitive to string
 
-    return editable ? (
-      <TouchableOpacity
-      style={isPressed ? pressedStyle : unpressedStyle}        
-      onPress={handlePress}
-      >
-      
-        <Text style={tabTextStyle}>
-          {SvgIcon && <SvgIcon />}   {displayText}
-        </Text>
-    
-      </TouchableOpacity>
-
-      
-    ) : (
-      <View style={isPressed?pressedStyle:unpressedStyle}>
-        {SvgIcon && <SvgIcon />}
-        <Text style={tabTextStyle}>{displayText}</Text>
-      </View>
-    );
+  return editable ? (
+    <TouchableOpacity style={isPressed ? pressedStyle : unpressedStyle} onPress={handlePress}>
+      <Text style={tabTextStyle}>
+        {SvgIcon && <SvgIcon />} {displayText}
+      </Text>
+    </TouchableOpacity>
+  ) : (
+    <View style={isPressed ? pressedStyle : unpressedStyle}>
+      {SvgIcon && <SvgIcon />}
+      <Text style={tabTextStyle}>{displayText}</Text>
+    </View>
+  );
 }
-
-

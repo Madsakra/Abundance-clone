@@ -2,11 +2,12 @@ import { Entypo } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 import { FlashList } from '@shopify/flash-list';
 import { Link, router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
-import storage from '@react-native-firebase/storage';
+
 import FunctionTiedButton from '~/components/FunctionTiedButton';
 import LoadingAnimation from '~/components/LoadingAnimation';
 import PressableTab from '~/components/PressableTab';
@@ -64,8 +65,7 @@ export default function GoalSetting() {
     console.log(profileGoals);
     console.log(uid);
 
-  
-    console.log(profileData.image)
+    console.log(profileData.image);
     const reference = storage().ref(`${uid}-profile-picture`);
     const pathToFile = profileData.image;
     // uploads file
@@ -75,13 +75,13 @@ export default function GoalSetting() {
     console.log(url);
 
     const finalProfile = {
-      image:url,
-      birthDate:profileData.birthDate,
-      gender:profileData.gender,
-      height:JSON.parse(profileData.height),
-      weight:JSON.parse(profileData.weight),
-      profileDiet:profileData.profileDiet,
-      profileHealthCondi:profileData.profileHealthCondi,
+      image: url,
+      birthDate: profileData.birthDate,
+      gender: profileData.gender,
+      height: JSON.parse(profileData.height),
+      weight: JSON.parse(profileData.weight),
+      profileDiet: profileData.profileDiet,
+      profileHealthCondi: profileData.profileHealthCondi,
       goals: profileGoals,
     };
 
