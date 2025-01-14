@@ -148,7 +148,7 @@ export default function GoalSetting() {
           extraData={profileGoals}
           renderItem={({ item }) => (
             <PressableTab
-              editable={true}
+              editable
               isPressed={profileGoals.some(
                 (condition) => condition.id === item.id // Ensure you're comparing by id
               )}
