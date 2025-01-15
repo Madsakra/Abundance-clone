@@ -34,9 +34,7 @@ export default function SignIn() {
         alert('Please enter a valid email address!');
       } else {
         // Call sign-in function with email and password
-        await auth()
-          .signInWithEmailAndPassword(email, password)
-          .then(() => resetSignIn());
+        await auth().signInWithEmailAndPassword(email, password);
       }
     } catch (e: any) {
       const err = e as FirebaseError;

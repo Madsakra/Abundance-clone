@@ -1,20 +1,21 @@
 import { Ionicons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
 import axios from 'axios';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import SearchSection from '~/components/SearchSection';
-import { EDAMAM_APP_ID, EDAMAM_APP_KEY } from '~/utils';
+import { EdamamApiResponse, EdamamItem } from '~/types/common/edaman';
+import { EDAMAM_APP_ID, EDAMAM_APP_KEY, getCaloriesPerServing } from '~/utils';
 
 export default function CookedMeals() {
   const [foodName, setFoodName] = useState<string>('');
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<EdamamItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [isRenewing, setIsRenewing] = useState(false); // Track if renewing search
-  const PAGE_SIZE = 10; // Number of results per page
+  const router = useRouter();
 
   const baseUrl = 'https://api.edamam.com/api/recipes/v2';
   const params = {
@@ -32,7 +33,6 @@ export default function CookedMeals() {
 
     setIsRenewing(true);
     setData([]); // Clear current data
-    setPage(0);
     setHasMore(true);
 
     await searchForFood(); // Start new search
@@ -45,16 +45,12 @@ export default function CookedMeals() {
     setLoading(true);
 
     try {
-      const from = page * PAGE_SIZE;
-      const to = from + PAGE_SIZE;
+      const response = await axios.get<EdamamApiResponse>(baseUrl, { params });
 
-      const response = await axios.get(baseUrl, { params });
-
-      const newData = response.data.hits.map((hit: any) => hit.recipe);
+      const newData: EdamamItem[] = response.data.hits.map((hit) => hit.recipe);
 
       setData((prevData) => [...prevData, ...newData]); // Append new results
       setHasMore(newData.length > 0); // Stop if no more results
-      setPage((prevPage) => prevPage + 1); // Increment page
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -62,8 +58,15 @@ export default function CookedMeals() {
     }
   };
 
-  const renderItem = ({ item }: { item: any }) => (
-    <View style={{ padding: 10, borderBottomWidth: 1, borderColor: '#ccc', flexDirection: 'row' }}>
+  const renderItem = ({ item }: { item: EdamamItem }) => (
+    <Pressable
+      onPress={() => {
+        router.push({
+          pathname: '/(userScreens)/(caloriesAndGlucose)/calories/meal-detail/meal-detail',
+          params: { item: JSON.stringify(item) },
+        });
+      }}
+      style={{ padding: 10, borderBottomWidth: 1, borderColor: '#ccc', flexDirection: 'row' }}>
       {/* Display the recipe image */}
 
       {item.image ? (
@@ -96,10 +99,10 @@ export default function CookedMeals() {
           {item.label}
         </Text>
         <Text style={{ fontFamily: 'Poppins-Bold', fontSize: 15, color: '#C68F5E' }}>
-          {Math.round(item.calories)} kcal / {item.yield} servings
+          {Math.round(getCaloriesPerServing(item))} kcal / 1 serving
         </Text>
       </View>
-    </View>
+    </Pressable>
   );
 
   return (
