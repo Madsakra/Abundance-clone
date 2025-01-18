@@ -49,7 +49,7 @@ export default function CapturedPhoto() {
             ],
           },
         ],
-        max_tokens: 20, // Limit the response to just the food name
+        max_tokens: 20,
       });
 
       const foodName = response.choices[0].message.content?.trim();
@@ -64,10 +64,10 @@ export default function CapturedPhoto() {
     try {
       const response = await axios.get<EdamamApiResponse>('https://api.edamam.com/search', {
         params: {
-          q: foodName, // Food name detected by OpenAI
+          q: foodName,
           app_id: EDAMAM_APP_ID,
           app_key: EDAMAM_APP_KEY,
-          to: 1, // Limit to 1 result for simplicity
+          to: 1,
         },
       });
 
