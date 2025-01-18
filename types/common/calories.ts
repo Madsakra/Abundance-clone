@@ -9,7 +9,7 @@ export interface FoodInfo {
   image_url: string;
 }
 
-export interface Calories {
+export interface CaloriesTracking {
   amount: number;
   category: Category;
   food_info: FoodInfo;

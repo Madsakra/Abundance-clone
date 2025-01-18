@@ -6,8 +6,17 @@ import React, { useState } from 'react';
 import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import SearchSection from '~/components/SearchSection';
+import Toast from '~/components/notifications/toast';
+import { useUserAccount } from '~/ctx';
 import { EdamamApiResponse, EdamamItem } from '~/types/common/edaman';
-import { EDAMAM_APP_ID, EDAMAM_APP_KEY, getCaloriesPerServing } from '~/utils';
+import {
+  EDAMAM_APP_ID,
+  EDAMAM_APP_KEY,
+  getCaloriesPerServing,
+  toastError,
+  toastInfo,
+  toastRef,
+} from '~/utils';
 
 export default function CookedMeals() {
   const [foodName, setFoodName] = useState<string>('');
@@ -15,6 +24,7 @@ export default function CookedMeals() {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [isRenewing, setIsRenewing] = useState(false); // Track if renewing search
+  const { account } = useUserAccount();
   const router = useRouter();
 
   const baseUrl = 'https://api.edamam.com/api/recipes/v2';
@@ -107,6 +117,7 @@ export default function CookedMeals() {
 
   return (
     <View style={{ flex: 1 }}>
+      <Toast ref={toastRef} />
       <View style={styles.topHeaderContainer}>
         {/*FIRST ROW*/}
         <View style={styles.firstRowContainer}>
@@ -114,6 +125,10 @@ export default function CookedMeals() {
 
           <Pressable
             onPress={() => {
+              if (account?.role === 'free_user') {
+                toastInfo('Upgrade to premium to use this feature.');
+                return;
+              }
               router.push({
                 pathname: '/(userScreens)/(caloriesAndGlucose)/calories/food-scanner/food-scanner',
               });

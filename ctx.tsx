@@ -28,7 +28,6 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
   const onAuthStateChanged = async (user: FirebaseAuthTypes.User | null) => {
     setLoading(true);
-    console.log('user:', user);
 
     if (user) {
       if (!user?.emailVerified) {
@@ -44,7 +43,6 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({ c
         if (documentSnapshot.exists) {
           // Profile exists
           const userProfile = documentSnapshot.data() as UserProfile;
-          console.log('User profile found:', userProfile);
           setProfile(userProfile);
         } else {
           // Profile does not exist
@@ -80,7 +78,6 @@ export const UserAccountProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
   const onAuthStateChanged = async (user: FirebaseAuthTypes.User | null) => {
     setLoading(true);
-    console.log('user:', user);
 
     if (user) {
       if (!user?.emailVerified) {

@@ -8,6 +8,7 @@ import { DigestItem, EdamamItem } from './types/common/edaman';
 
 export const EDAMAM_APP_ID = process.env.EXPO_PUBLIC_EDAMAM_ID;
 export const EDAMAM_APP_KEY = process.env.EXPO_PUBLIC_EDAMAM_APP_KEY;
+export const OPENAI_API_KEY = process.env.EXPO_PUBLIC_GPT_KEY;
 
 export const db = firestore();
 export const currentUser = auth().currentUser;

@@ -59,7 +59,6 @@ export default function CameraTesting() {
   const takePicture = async () => {
     try {
       if (camera.current == null) throw new Error('Camera ref is null!');
-      console.log('Taking a picture...');
       const photo = await camera.current.takePhoto({
         enableShutterSound: false,
       });
@@ -83,12 +82,11 @@ export default function CameraTesting() {
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.canceled) {
+      const media = result.assets[0].uri;
       router.push({
         pathname: '/captured-photo',
-        params: { media: result.assets[0].uri, type: 'photo' },
+        params: { media, type: 'photo' },
       });
     }
   };

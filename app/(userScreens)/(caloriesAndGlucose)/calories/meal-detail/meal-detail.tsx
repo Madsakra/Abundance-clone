@@ -5,7 +5,7 @@ import { Image, ScrollView, StyleSheet, Text, TextInput, View } from 'react-nati
 
 import FunctionTiedButton from '~/components/FunctionTiedButton';
 import Toast from '~/components/notifications/toast';
-import { Calories } from '~/types/common/calories';
+import { CaloriesTracking } from '~/types/common/calories';
 import { EdamamItem } from '~/types/common/edaman';
 import {
   currentUser,
@@ -47,7 +47,7 @@ export default function MealDetail() {
   async function uploadCalories() {
     if (!currentUser) return;
 
-    const data: Calories = {
+    const data: CaloriesTracking = {
       amount: calculatedCalories === 0 ? getCaloriesPerServing(item) : calculatedCalories,
       category: 'meal',
       food_info: {
