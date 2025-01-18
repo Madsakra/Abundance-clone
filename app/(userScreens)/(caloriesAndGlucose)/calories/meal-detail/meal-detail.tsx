@@ -70,7 +70,7 @@ export default function MealDetail() {
           toastSuccess('Uploaded Successfully');
           setTimeout(() => {
             router.push('/(userScreens)/(caloriesAndGlucose)/gateway');
-          }, 1000);
+          }, 1200);
         });
     } catch (err) {
       console.log(err);

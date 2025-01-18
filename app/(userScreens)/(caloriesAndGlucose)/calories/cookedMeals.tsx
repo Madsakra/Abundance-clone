@@ -112,7 +112,13 @@ export default function CookedMeals() {
         <View style={styles.firstRowContainer}>
           <Text style={styles.headerText}>Cooked Meals</Text>
 
-          <Pressable style={styles.topRightButton}>
+          <Pressable
+            onPress={() => {
+              router.push({
+                pathname: '/(userScreens)/(caloriesAndGlucose)/calories/food-scanner/food-scanner',
+              });
+            }}
+            style={styles.topRightButton}>
             <Ionicons name="camera" size={25} color="#C68F5E" />
             <Text style={styles.topRightButtonText}>Scan Food</Text>
           </Pressable>
