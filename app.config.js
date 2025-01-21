@@ -3,6 +3,7 @@ export default {
     name: 'Abundance-App',
     slug: 'Abundance-App',
     version: '1.0.0',
+    owner: 'abudance14',
     scheme: 'Abundance App',
     web: {
       bundler: 'metro',
@@ -70,6 +71,5 @@ export default {
         projectId: '21dde433-7fc3-41d2-8488-5e8c020ba05a',
       },
     },
-    owner: 'axmen',
   },
 };

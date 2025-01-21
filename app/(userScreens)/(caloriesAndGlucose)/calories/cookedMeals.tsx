@@ -9,14 +9,7 @@ import SearchSection from '~/components/SearchSection';
 import Toast from '~/components/notifications/toast';
 import { useUserAccount } from '~/ctx';
 import { EdamamApiResponse, EdamamItem } from '~/types/common/edaman';
-import {
-  EDAMAM_APP_ID,
-  EDAMAM_APP_KEY,
-  getCaloriesPerServing,
-  toastError,
-  toastInfo,
-  toastRef,
-} from '~/utils';
+import { EDAMAM_APP_ID, EDAMAM_APP_KEY, getCaloriesPerServing, toastInfo, toastRef } from '~/utils';
 
 export default function CookedMeals() {
   const [foodName, setFoodName] = useState<string>('');
