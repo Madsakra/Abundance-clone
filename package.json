@@ -13,7 +13,7 @@
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\" && prettier -c \"**/*.{js,jsx,ts,tsx,json}\"",
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
     "web": "expo start --web",
-    "eas-build-pre-install": "ts-node scripts/createEnvFiles.ts"
+    "eas-build-pre-install": "npm install ts-node && npx ts-node scripts/createEnvFiles.ts"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.0",
